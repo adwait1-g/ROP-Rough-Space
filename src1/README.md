@@ -1,4 +1,4 @@
-## How to add support for new instruction?
+## How to add support for a new instruction?
 
 **a.** Give a token code to the new instruction in Lexer.h .
 **b.** Add code in the Lexer so that the Lexer is able to identify the new instruction. 
