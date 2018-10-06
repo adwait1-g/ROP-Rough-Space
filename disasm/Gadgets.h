@@ -1,59 +1,13 @@
+#include<bits/stdc++.h>
+#include<stdio.h>
+#include<sys/mman.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<elf.h>
+#include<capstone/capstone.h>
 
 
-enum ret{
-
-    ret_near = 1,
-    ret_far = 2, 
-    ret_near_pop = 3,
-    ret_far_pop = 4,
-}
-
-class Gadget {
-    unsigned char ret_type;
-    
-};
-
-
-//========================================GetGadgets - Get all ret gadgets===================================//
-
-int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N) {
-
-    unsigned char *ptr = retptr;
-    unsigned long Address = RetAddress;
-    csh handle;
-    cs_insn *insn;
-    unsigned long InstCount;
-
-    if(cs_open(CS_ARCH_X86, CS_MODE_64, &handle) != CS_ERR_OK) {
-        std::cerr<<"Error: Unable to open capstone handle"<<std::endl;
-        return -1;
-    }
-
-    unsigned long count = 1;
-    while(count <= N) {
-
-        std::cout<<"\nCOUNT: "<<count<<std::endl;
-        InstCount = cs_disasm(handle, ptr, count, Address, 0, &insn);
-        if(InstCount == 0) {
-            std::cerr<<"Error: Unable to disassemble - Inside GetGadgets()"<<std::endl;
-            //return -1;
-        }
-
-        for(unsigned long j = 0; j < InstCount; j++) 
-            printf("0x%lx: %s %s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-            
-        count++;
-        ptr--;
-        Address--;
-    }
-
-    cs_close(&handle);
-
-    return 0;
-}
-
-//=================================GetAllGadgets: Driver function====================================//
-
+// GetAllGadgets: A Stub function in between low-level functions(functions which actually disassemble stuff) and the main function. 
 int GetAllGadgets(unsigned char *inst, unsigned long TextSize, unsigned long EntryAddress, unsigned long N) {
 
     //Disassembly of the text section will go into a file named disass.dump. 
@@ -136,6 +90,5 @@ int GetAllGadgets(unsigned char *inst, unsigned long TextSize, unsigned long Ent
 
     cs_close(&handle);
 }
-
 
 
