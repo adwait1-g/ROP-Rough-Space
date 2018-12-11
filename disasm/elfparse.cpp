@@ -1,3 +1,4 @@
+#include"Gadgets.h"
 
 
 enum ret{
@@ -6,7 +7,7 @@ enum ret{
     ret_far = 2, 
     ret_near_pop = 3,
     ret_far_pop = 4,
-}
+};
 
 class Gadget {
     unsigned char ret_type;
