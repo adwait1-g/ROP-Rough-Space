@@ -40,6 +40,10 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
             //return -1;
         }
 
+        if(strcmp(insn[InstCount-1].mnemonic, "ret")== 0) {
+            std::cout << "INTERESTING!" << std::endl;
+        }
+        // std::cout << "INTERESTING: " << insn[InstCount-1].mnemonic << std::endl;
         for(unsigned long j = 0; j < InstCount; j++) 
             printf("0x%lx: %s %s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
             
