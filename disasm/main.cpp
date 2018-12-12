@@ -124,9 +124,7 @@ int main(int argc, char **argv) {
     fclose(fp);
     // Done finding size of .text segment //
 
-
-
-    //=======Disassemble the shit out of it!=========//
+    //=======Disassemble the shit out of it! LOLLLL=========//
     unsigned char *inst = (unsigned char *)(start + TextAddress);
     if(GetAllGadgets(inst, TextSize, EntryAddress, ConfN) == -1) {
         std::cerr<<"Error: GetGadgets() routine failed for some reason"<<std::endl;
