@@ -7,6 +7,9 @@
 #include<capstone/capstone.h>
 
 #include "Gadgets.h"
+#include "trie.h"
+
+Trie trie;
 
 //TODO: 
 //1. To find the size of the file, the program is reading the file and closing it - slow - find a better method. 
@@ -129,6 +132,64 @@ int main(int argc, char **argv) {
     if(GetAllGadgets(inst, TextSize, EntryAddress, ConfN) == -1) {
         std::cerr<<"Error: GetGadgets() routine failed for some reason"<<std::endl;
         return -1;
+    }
+
+    printf("IN MAIN!\n");
+    std::vector<cs_insn> hope = gadgets[1];
+    for(int k=0; k< hope.size(); k++) {
+        for(int l=0; l < hope[k].size;l++) {
+            printf("%x ", hope[k].address);
+        }
+        printf("\n");
+    }
+
+    // Vectors that will be used to build the trie
+    std::vector<std::vector< std::vector< uint8_t > > > trie_gadgets;
+    std::vector<std::vector<uint64_t > > trie_addresses;
+
+
+    for(int i=0 ; i < gadgets.size(); i++) {
+        trie_gadgets.push_back(std::vector<std::vector<uint8_t >>());
+        std::vector<uint64_t> addresses;
+        for(int j =0; j < gadgets[i].size() ; j++) {
+            std::vector<uint8_t> temp;
+            uint64_t address = gadgets[i][j].address;
+            
+            for(int k=0 ; k < gadgets[i][j].size; k++) {
+                temp.push_back(gadgets[i][j].bytes[k]);
+            }
+            trie_gadgets[i].push_back(temp);
+            addresses.push_back(address);
+        }
+        trie_addresses.push_back(addresses);
+    }
+
+    // For debugging purposes, to see if the gadgets are being stored correctly
+    // for each gadget
+    for(int i=0; i < trie_gadgets.size();i++) {
+        printf("Gadget #%d\n", i);
+        // for each insn in a particular gadget
+        for(int j=0 ; j < trie_gadgets[i].size(); j++) {
+            // for each byte in a particular insn
+            for(int k=0 ; k < trie_gadgets[i][j].size(); k++) {
+                printf("0x%x: %x ", trie_addresses[i][j] ,trie_gadgets[i][j][k]);
+            }
+            printf("\n");
+        }
+    }
+
+    trie.build_trie(trie_gadgets, trie_addresses, trie_gadgets.size());
+
+
+    // For debugging: checking if build_trie worked. Search for a gadget that's supposed to be there
+    // In this example, 00 5d c3 is being searched for.
+    // for ./elfparse hello 5, this should be gadget #2
+    bool result = false;
+    printf("%x ", trie.search({{0,0}, {93}, {195}}, result));
+    if(result==1) {
+        cout << "Gadget is present in trie" << endl;
+    } else {
+        cout << "Gadget is not present in trie" << endl;
     }
     
     return 0;

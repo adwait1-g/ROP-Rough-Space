@@ -14,6 +14,8 @@ class Gadget {
     
 };
 
+std::vector<std::vector<cs_insn> > gadgets;
+
 
 //========================================GetGadgets - Get all ret gadgets===================================//
 
@@ -22,7 +24,7 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
     unsigned char *ptr = retptr;
     unsigned long Address = RetAddress;
     csh handle;
-    cs_insn *insn;
+    cs_insn *insn; 
     unsigned long InstCount;
 
     if(cs_open(CS_ARCH_X86, CS_MODE_64, &handle) != CS_ERR_OK) {
@@ -33,11 +35,15 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
     unsigned long count = 1;
     while(count <= N) {
 
+        std::vector<cs_insn> gadget;
         
         InstCount = cs_disasm(handle, ptr, count, Address, 0, &insn);
         if(InstCount == 0) {
-            std::cerr<<"Error: Unable to disassemble - Inside GetGadgets()"<<std::endl;
+            //std::cerr<<"Error: Unable to disassemble - Inside GetGadgets()"<<std::endl;
+            ptr--;
+            Address--;
             //return -1;
+            continue;
         }
 
         if(strcmp(insn[InstCount-1].mnemonic, "ret")== 0) {
@@ -48,8 +54,12 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
                 for(int m_code =0 ; m_code < insn[j].size ; m_code++ ) {
                     printf("%x ", insn[j].bytes[m_code]);
                 }
+                gadget.push_back(insn[j]);
                 printf("\n");
             }
+        }
+        if(gadget.size() > 0) {
+            gadgets.push_back(gadget);
         }
         
         

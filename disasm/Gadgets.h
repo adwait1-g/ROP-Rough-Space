@@ -10,6 +10,7 @@
 #include<elf.h>
 #include<capstone/capstone.h>
 
+extern std::vector<std::vector<cs_insn> > gadgets; 
 
 int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N);
 int GetAllGadgets(unsigned char *inst, unsigned long TextSize, unsigned long EntryAddress, unsigned long N);
