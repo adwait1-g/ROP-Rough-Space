@@ -5,34 +5,29 @@
 using namespace std;
 
 struct Node {
-  // Address (EIP) of this instruction
-  uint64_t address;
+    // Address (EIP) of this instruction
+    uint64_t address;
 
-  // Size of this instruction (number of bytes)
-  uint16_t size;
+    // Size of this instruction (number of instruction)
+    uint16_t size;
 
-  // Machine bytes of this instruction, with number of bytes indicated by @size above
-  uint8_t bytes[16];
+    // Machine instruction of this instruction, with number of instruction indicated by @size above
+    std::vector<uint8_t> instruction;
 
-  // Ascii text of instruction mnemonic
-  char mnemonic[32];
-
-  // Ascii text of instruction operands
-  char op_str[160];
-  char ch;
-  map<char, Node*> children;
+    int count;
+    map<std::vector<uint8_t>, Node*> children;
 };
 
 class Trie {
   public:
-    Trie() { head.address = -1; };
+    Trie() { head.size = 0; };
     ~Trie();
 
-    void build_trie(string words[], int length);
-    void insert(string word);
-    void search(string word, bool &result);
+    void build_trie(std::vector<std::vector<uint8_t> > gadgets[],std::vector<std::vector<uint64_t> > addresses ,  int no_gadgets);
+    void insert(std::vector<std::vector<uint8_t> > gadget, std::vector<uint64_t>  address);
+    uint64_t search(std::vector<std::vector<uint8_t> > gadget, bool &result);
 
-    void print_tree(map<char, Node*> tree);
+    void print_tree(map<std::vector<uint8_t>, Node*> tree);
     void print();
 
   protected:
@@ -48,20 +43,20 @@ Trie::~Trie() {
   }
 }
 
-void Trie::build_trie(string words[], int length) {
-  for (int i=0; i<length; ++i) {
-    insert(words[i]);
+void Trie::build_trie(std::vector<std::vector<uint8_t>> gadgets[], std::vector<std::vector<uint64_t> > addresses, int no_gadgets) {
+  for (int i=0; i<no_gadgets; ++i) {
+    insert(gadgets[i], addresses[i]);
   }
 }
 
-void Trie::insert(string word) {
-  map<char, Node*> *current_tree = &head.children;
-  map<char, Node*>::iterator it;
+void Trie::insert(std::vector<std::vector<uint8_t>> gadget, std::vector<uint64_t> addresses) {
+  map<std::vector<uint8_t>, Node*> *current_tree = &head.children;
+  map<std::vector<uint8_t>, Node*>::iterator it;
 
-  for (int i=0; i<word.length(); ++i) {
-    char ch = word[i];
+  for (int i=0; i<gadget.size(); ++i) {
+    std::vector<uint8_t> insn = gadget[i];
 
-    if ((it = current_tree->find(ch)) != current_tree->end()) {
+    if ((it = current_tree->find(insn)) != current_tree->end()) {
       current_tree = &it->second->children;
       continue;
     }
@@ -76,8 +71,11 @@ void Trie::insert(string word) {
       //   cout << temp->first << endl;
 
       Node* new_node = new Node();
-      new_node->ch = ch;
-      (*current_tree)[ch] = new_node;
+      for(int j=0; j< insn.size(); j++) {
+          new_node->instruction.push_back(insn[j]);
+      }
+      new_node->address = addresses[i];
+      (*current_tree)[insn] = new_node;
 
       // For continuous inserting a word.
       current_tree = &new_node->children;
@@ -88,34 +86,41 @@ void Trie::insert(string word) {
   }
 }
 
-void Trie::search(string word, bool &result) {
-  map<char, Node*> current_tree = head.children;
-  map<char, Node*>::iterator it;
+uint64_t Trie::search(std::vector<std::vector<uint8_t>> gadget, bool &result) {
+  map<std::vector<uint8_t>, Node*> current_tree = head.children;
+  map<std::vector<uint8_t>, Node*>::iterator it;
+  uint64_t address = 0;
 
-  for (int i=0; i<word.length(); ++i) {
-    if ((it = current_tree.find(word[i])) == current_tree.end()) {
+  bool f = false;
+  for (int i=0; i<gadget.size(); ++i) {
+    if ((it = current_tree.find(gadget[i])) == current_tree.end()) {
+      address = 0;
       result = false;
-      return;
+      return address;
     }
     current_tree = it->second->children;
+    address = it->second->address;
   }
 
-  result = true;
-  return ;
+  result= true;
+  return address;
 }
 
-void Trie::print_tree(map<char, Node*> tree) {
+void Trie::print_tree(map<std::vector<uint8_t>, Node*> tree) {
   if (tree.empty()) {
     return;
   }
 
-  for (map<char, Node*>::iterator it=tree.begin(); it!=tree.end(); ++it) {
-    cout << it->first << endl;
+  for (map<std::vector<uint8_t>, Node*>::iterator it=tree.begin(); it!=tree.end(); ++it) {
+    for(int i=0; i < it->first.size() ;i++) {
+        printf("%x ", it->first[i]);
+    }
+    cout << std::endl;
     print_tree(it->second->children);
   }
 }
 
 void Trie::print() {
-  map<char, Node*> current_tree = head.children;
+  map<std::vector<uint8_t>, Node*> current_tree = head.children;
   print_tree(current_tree);
 }
