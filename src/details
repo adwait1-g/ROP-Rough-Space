@@ -1,0 +1,150 @@
+gvtAim: Execute execve("/bin/sh", 0, 0);
+
+More precisely, 
+
+Let us try out the 32-bit version first. 
+
+a. rax <- 11
+b. rbx <- Address of "/bin/sh"
+c. rcx <- 0
+d. rdx <- 0
+e. int 0x80
+
+Required output: rax <- 11
+
+These are the steps I would take to get the job done.
+
+1. GadgetList = GetLoadConstGadgets(rax); 
+
+    * GetLoadConstGadgets(TargetReg); 
+
+2. GadgetList has a list of all gadgets loading a constant into rax. Now, the hunt starts. 
+
+    a. Search for "mov rax, 11" 
+        
+        * If found, go to next : rbx <- Address of "/bin/sh"
+        * If not found, go to (b).  
+    
+    b. Seach for "xor rax, rax; ret" 
+
+        * If found, go to (3)
+        * If not found, go to (c).
+    
+    c. Search for "mov rax, <const>; ret"
+
+        * If found, go to (3)
+        * If not found, go to (d)
+    
+    d. Search for "mov <anyReg>, <const>; xchg rax, rbx; ret"
+
+        * If found, go to (3)
+        * If not found, go to (e)
+    
+    e. If there is any way, list it here. 
+
+NOTE: There are a lot of 
+
+3. Search for arithmetic instructions like this: GetArithmeticGadgets(rax); GetArithmeticGadgets(TargetReg); 
+
+    a. Search for rax <- rax + 1 type instructions. 
+    
+        * Search for "inc rax; ret"
+        * Search for "add rax, 1; ret"
+        * Search for "sub rax, -1; ret"
+
+    b. Search for rax <- rax + p type instructions.
+
+        * Search for "add rax, p; ret"
+        * Search for "sub rax, -p; ret"
+
+
+Required output: rbx <- "Address of "/bin/sh"
+
+1. Find a writable section first - can get from part1 - take .data by default. 
+
+2. We have to find gadgets which can write "/bin//sh" into .data section.
+
+    a. We have to load stuff into registers here. 
+
+    b. Prepare the stack like this: 
+
+        .data Section's Address
+        0x68732f2f6e69622f
+
+    c. We have to find these type of gadgets. 
+
+        * pop <anyReg1>; ret and anyReg1 != rax --------------------- This will load .data section's address into anyReg1. 
+        * pop <anyReg2>; ret and anyReg2 != rax, anyReg2 ------------ This will load "/bin//sh" into anyReg2. 
+
+        * mov qword [anyReg1], anyReg2          --------------------- This will write "/bin//sh" into .data section. 
+
+    d. Once written, we have to load .data section's address into rbx. 
+
+        * Search for "pop rbx; ret" and which does not dereference any register except rbp as an address(If it is dereferenced, it segfaults and exploit fails)
+        * rbp is the safety net for dereferencing instructions. 
+        * Also, this gadget should not change the value of rax. 
+        * It seems like there are a lot of "pop rbx; ret" gadgets. 
+
+    e. If "pop rbx; ret" is not found, go for this. 
+
+        "pop <anyReg>; ret"
+        "mov rbx, anyReg; ret"
+        "exhg rbx, anyReg; ret"     -- anyReg cannot be rax, rbx. 
+    
+    f. If there are new ideas, add it here. 
+
+Now, we have rbx ready!
+
+Required output: rcx <- 0
+
+1. Easiest thing to do. 
+
+    a. Search for "pop rcx; ret" Load 0 onto the stack. 
+
+2. If there are no "pop rcx; ret" : 
+
+    a. Search for "xor rcx, rcx; ret" - gadgets which do not involve rax, rbx in any manner. 
+    b. Search for "mov rax, 0; ret"     - gadgets which do not involve rax, rbx in any manner. 
+
+    c. Repeat what we did for rax <- 11. 
+
+
+Required output: rdx <- 0
+
+    a. Same as rcx <- 0
+
+
+
+Required Instruction: int 0x80 - either it is present or not present!
+
+---------------------------------------------------------------------------
+
+If that is not successful, we can get to the 64-bit version. 
+
+execve("/bin//sh", 0, 0);
+
+rax <- 59
+rdi <- address of "/bin/sh"
+rsi <- 0
+rdx <- 0
+syscall
+
+Do the same!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

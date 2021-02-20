@@ -1,0 +1,138 @@
+0x400430: 1í xor ebp, ebp
+0x400432: I‰Ñ mov r9, rdx
+0x400435: ^ pop rsi
+0x400436: H‰â mov rdx, rsp
+0x400439: Hƒäğ and rsp, 0xfffffffffffffff0
+0x40043d: P push rax
+0x40043e: Tregister_tm_clopush push rsp
+0x40043f: IÇÀÀ@ mov r8, 0x4005c0
+0x400446: HÇÁP@ mov rcx, 0x400550
+0x40044d: HÇÇ&@ mov rdi, 0x400526
+0x400454: è·ÿÿÿ call 0x400410
+0x400459: ô hlt 
+0x40045a: fD nop word ptr [rax + rax]
+0x400460: ¸?` mov eax, 0x60103f
+0x400465: U push rbp
+0x400466: H-8` sub rax, 0x601038
+0x40046c: Hƒø cmp rax, 0xe
+0x400470: H‰å mov rbp, rsp
+0x400473: v jbe 0x400490
+0x400475: ¸ mov eax, 0
+0x40047a: H…À test rax, rax
+0x40047d: t je 0x400490
+0x40047f: ] pop rbp
+0x400480: ¿8` mov edi, 0x601038
+0x400485: ÿà jmp rax
+0x400487: f„ nop word ptr [rax + rax]
+0x400490: ] pop rbp
+0x400491: Ã ret 
+0x400492: @ nop dword ptr [rax]
+0x400496: f.„ nop word ptr cs:[rax + rax]
+0x4004a0: ¾8` mov esi, 0x601038
+0x4004a5: U push rbp
+0x4004a6: Hî8` sub rsi, 0x601038
+0x4004ad: HÁş sar rsi, 3
+0x4004b1: H‰å mov rbp, rsp
+0x4004b4: H‰ğ mov rax, rsi
+0x4004b7: HÁè? shr rax, 0x3f
+0x4004bb: HÆ add rsi, rax
+0x4004be: HÑş sar rsi, 1
+0x4004c1: t je 0x4004d8
+0x4004c3: ¸ mov eax, 0
+0x4004c8: H…À test rax, rax
+0x4004cb: t je 0x4004d8
+0x4004cd: ] pop rbp
+0x4004ce: ¿8` mov edi, 0x601038
+0x4004d3: ÿà jmp rax
+0x4004d5:  nop dword ptr [rax]
+0x4004d8: ] pop rbp
+0x4004d9: Ã ret 
+0x4004da: fD nop word ptr [rax + rax]
+0x4004e0: €=Q  cmp byte ptr [rip + 0x200b51], 0
+0x4004e7: u jne 0x4004fa
+0x4004e9: U push rbp
+0x4004ea: H‰å mov rbp, rsp
+0x4004ed: ènÿÿÿ call 0x400460
+0x4004f2: ] pop rbp
+0x4004f3: Æ>  mov byte ptr [rip + 0x200b3e], 1
+0x4004fa: óÃ ret 
+0x4004fc: @ nop dword ptr [rax]
+0x400500: ¿ ` mov edi, 0x600e20
+0x400505: Hƒ? cmp qword ptr [rdi], 0
+0x400509: u jne 0x400510
+0x40050b: ë“ jmp 0x4004a0
+0x40050d:  nop dword ptr [rax]
+0x400510: ¸ mov eax, 0
+0x400515: H…À test rax, rax
+0x400518: tñ je 0x40050b
+0x40051a: U push rbp
+0x40051b: H‰å mov rbp, rsp
+0x40051e: ÿĞ call rax
+0x400520: ] pop rbp
+0x400521: ézÿÿÿ jmp 0x4004a0
+0x400526: U push rbp
+0x400527: H‰å mov rbp, rsp
+0x40052a: Hƒì sub rsp, 0x10
+0x40052e: ‰}ü mov dword ptr [rbp - 4], edi
+0x400531: H‰uğ mov qword ptr [rbp - 0x10], rsi
+0x400535: ¿Ô@ mov edi, 0x4005d4
+0x40053a: èÁşÿÿ call 0x400400
+0x40053f: ¸ mov eax, 0
+0x400544: É leave 
+0x400545: Ã ret 
+0x400546: f.„ nop word ptr cs:[rax + rax]
+0x400550: AW push r15
+0x400552: AV push r14
+0x400554: A‰ÿ mov r15d, edi
+0x400557: AU push r13
+0x400559: AT push r12
+0x40055b: L%®  lea r12, qword ptr [rip + 0x2008ae]
+0x400562: U push rbp
+0x400563: H-®  lea rbp, qword ptr [rip + 0x2008ae]
+0x40056a: S push rbx
+0x40056b: I‰ö mov r14, rsi
+0x40056e: I‰Õ mov r13, rdx
+0x400571: L)å sub rbp, r12
+0x400574: Hƒì sub rsp, 8
+0x400578: HÁı sar rbp, 3
+0x40057c: èGşÿÿ call 0x4003c8
+0x400581: H…í test rbp, rbp
+0x400584: t  je 0x4005a6
+0x400586: 1Û xor ebx, ebx
+0x400588: „ nop dword ptr [rax + rax]
+0x400590: L‰ê mov rdx, r13
+0x400593: L‰ö mov rsi, r14
+0x400596: D‰ÿ mov edi, r15d
+0x400599: AÿÜ call qword ptr [r12 + rbx*8]
+0x40059d: HƒÃ add rbx, 1
+0x4005a1: H9ë cmp rbx, rbp
+0x4005a4: uê jne 0x400590
+0x4005a6: HƒÄ add rsp, 8
+0x4005aa: [ pop rbx
+0x4005ab: ] pop rbp
+0x4005ac: A\ pop r12
+0x4005ae: A] pop r13
+0x4005b0: A^ pop r14
+0x4005b2: A_ pop r15
+0x4005b4: Ã ret 
+0x4005b5:  nop 
+0x4005b6: f.„ nop word ptr cs:[rax + rax]
+0x4005c0: óÃ ret 
+0x4005c2:  add byte ptr [rax], al
+0x4005c4: Hƒì sub rsp, 8
+0x4005c8: HƒÄ add rsp, 8
+0x4005cc: Ã ret 
+0x4005cd:  add byte ptr [rax], al
+0x4005cf:  add byte ptr [rcx], al
+0x4005d1:  add byte ptr [rdx], al
+0x4005d3:  add byte ptr [rax + 0x65], cl
+0x4005d6: l insb byte ptr [rdi], dx
+0x4005d7: l insb byte ptr [rdi], dx
+0x4005d8: o outsd dx, dword ptr [rsi]
+0x4005d9:  wo and byte ptr [rdi + 0x6f], dh
+0x4005dc: rl jb 0x40064a
+0x4005de: d add byte ptr fs:[rcx], al
+0x4005e1:  sbb eax, dword ptr [rbx]
+0x4005e3: ;4 cmp esi, dword ptr [rax + rax]
+0x4005e6:  add byte ptr [rax], al
+0x4005e8:  add eax, 0x10000000

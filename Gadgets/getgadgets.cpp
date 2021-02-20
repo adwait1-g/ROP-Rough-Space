@@ -1,6 +1,5 @@
 #include"Gadgets.h"
 
-
 enum ret{
 
     ret_near = 1,
@@ -47,13 +46,10 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
         }
 
         if(strcmp(insn[InstCount-1].mnemonic, "ret")== 0) {
-            std::cout<<"\nCOUNT: "<<count<<std::endl;
+            std::cout<<std::endl;
             // std::cout << "INTERESTING!" << std::endl;
             for(unsigned long j = 0; j < InstCount; j++) {
                 printf("0x%lx: %s %s ", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-                for(int m_code =0 ; m_code < insn[j].size ; m_code++ ) {
-                    printf("%x ", insn[j].bytes[m_code]);
-                }
                 gadget.push_back(insn[j]);
                 printf("\n");
             }
@@ -79,10 +75,12 @@ int GetGadgets(unsigned char *retptr, unsigned long RetAddress, unsigned long N)
 int GetAllGadgets(unsigned char *inst, unsigned long TextSize, unsigned long EntryAddress, unsigned long N) {
 
     //Disassembly of the text section will go into a file named disass.dump. 
+    std::cout<<"Disassembly of .text section is dumped in disass.dump"<<std::endl;
     FILE *fdisass;
-    fdisass = fopen("disass.dump", "w");
+    fdisass = fopen("disass.dump", "wb");
     if(fdisass == NULL) {
-        std::cerr<<"Error: Unable to create file to dump disassembly"<<std::endl;
+        std::cerr<<"Error: Unable to create file disass.dump"<<std::endl;
+        std::cerr<<"Exiting..."<<std::endl;
         return -1;
     }
     
@@ -116,12 +114,17 @@ int GetAllGadgets(unsigned char *inst, unsigned long TextSize, unsigned long Ent
 
     fclose(fdisass);
 
+    // Disassembly of .text section is done at this point.
+
+
     //The following code will aim to dump all ret gadgets present in the text section. 
+    std::cout<<"All Gadgets will be dumped in gadgets.rop"<<std::endl;
 
     FILE *fretgg;
-    fretgg = fopen("AllGadgets.dump", "w");
+    fretgg = fopen("gadgets.rop", "wb");
     if(fretgg == NULL) {
-        std::cerr<<"Error: Unable to create file to dump the gadgets"<<std::endl;
+        std::cerr<<"Error: Unable to create file gadgets.rop"<<std::endl;
+        std::cerr<<"Exiting..."<<std::endl;
         return -1;
     }
 
